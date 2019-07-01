@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"math/rand"
+	"time"
+	"os"
 	"strings"
 )
 
@@ -49,8 +52,38 @@ func (d deck) toString() string {
 }
 
 // Receiver function, saveToFile save a deck in our system files
-// fileString: name of the new created file
+// fileName: name of the new created file
 // return a error, if it´s the case
-func (d deck) saveToFile(fileString string) error {
-	return ioutil.WriteFile(fileString, []byte(d.toString()), 0666)
+func (d deck) saveToFile(fileName string) error {
+	return ioutil.WriteFile(fileName, []byte(d.toString()), 0666)
+}
+
+// newDeckFromFile load a saved deck from system files.
+// It becomes a bytes slice to string, to string slice and later to a deck
+// fileName: name of the deck wich is saved in system files
+// return the loaded deck
+func newDeckFromFile(fileName string) deck {
+	bytes, err := ioutil.ReadFile(fileName)
+
+	if err != nil {
+		fmt.Println("Error: ", err)
+		os.Exit(1)
+	}
+
+	str := strings.Split(string(bytes), ",")
+
+	return deck(str)
+}
+
+// Receiver function, shuffle a deck
+// It uses random numbers to swap the position between two elements
+// It creates a new seed to generate random numbres, using the current date
+func (d deck) shuffle() {
+	source := rand.NewSource(time.Now().UnixNano())
+	random := rand.New(source)
+
+	for x := range d {
+		newPosition := random.Intn(len(d) - 1)
+		d[x], d[newPosition] = d[newPosition], d[x]
+	}
 }
