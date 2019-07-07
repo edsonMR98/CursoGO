@@ -77,7 +77,7 @@ func newDeckFromFile(fileName string) deck {
 
 // Receiver function, shuffle a deck
 // It uses random numbers to swap the position between two elements
-// It creates a new seed to generate random numbres, using the current date
+// It creates a new seed to generate random numbers, using the current date
 func (d deck) shuffle() {
 	source := rand.NewSource(time.Now().UnixNano())
 	random := rand.New(source)
